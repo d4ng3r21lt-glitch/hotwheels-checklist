@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hot Wheels EXOTICS Checklist (2016–2025)</title>
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b0c10;
+      color: #e6edf3;
+    }
+
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+    }
+
+
+    h2 {
+      font-size: 1.25rem;
+      margin: 1.75rem 0 0.5rem;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 0.25rem;
+    }
+
+
+    .subtitle {
+      color: #8b949e;
+      margin-bottom: 1rem;
+    }
+
+
+    .summary-bar {
+      margin: 1rem 0 1.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      background: #111827;
+      border: 1px solid #1f2933;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1.5rem;
+    }
+
+
+    .summary-bar span {
+      font-size: 0.95rem;
+    }
+
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background: #1f2937;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+
+    .pill strong {
+      color: #e5e7eb;
+    }
+
+
+    .brand-section {
+      margin-bottom: 0.5rem;
+    }
+
+
+    .brand-meta {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 0.35rem;
+    }
+
+
+    ul.car-list {
+      list-style: none;
+      margin: 0;
+      padding: 0.2rem 0 0.4rem;
+      border-radius: 8px;
+      background: #020617;
+      border: 1px solid #111827;
+    }
+
+
+    li.car-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.9rem;
+    }
+
+
+    li.car-item:nth-child(odd) {
+      background: rgba(148, 163, 184, 0.06);
+    }
+
+
+    input[type="checkbox"] {
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+
+    label {
+      cursor: pointer;
+      flex: 1;
+    }
+
+
+    .fantasy-tag {
+      font-size: 0.75rem;
+      padding: 0.06rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      color: #9ca3af;
+      margin-left: 0.35rem;
+    }
+
+
+    @media (max-width: 600px) {
+      .page {
+        padding-inline: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Hot Wheels EXOTICS Checklist (2016–2025)</h1>
+    <div class="subtitle">
+      HW Exotics mainline + Exotics mini collections • Licensed + fantasy • Includes Lamborghini Sián FKP 37
+    </div>
+
+
+    <div class="summary-bar">
+      <span><strong>Total cars:</strong> <span id="total-count">0</span></span>
+      <span><strong>Collected:</strong> <span id="collected-count">0</span></span>
+      <span><strong>Missing:</strong> <span id="missing-count">0</span></span>
+      <span class="pill">
+        Progress:
+        <strong><span id="progress-percent">0</span>%</strong>
+      </span>
+    </div>
+
+
+    <div id="checklist"></div>
+  </div>
+
+
+  <script>
+    const STORAGE_KEY = "exoticsChecklist_2016_2025_v2";
+
+
+    const dataByBrand = {
+      "Lamborghini": [
+        "Huracán LP610-4",
+        "Huracán Super Trofeo",
+        "Aventador Miura Homage",
+        "Sesto Elemento",
+        "Centenario Roadster",
+        "Aventador J",
+        "Urus ’17",
+        "Countach Pace Car",
+        "Countach LPI800-4",
+        "Revuelto",
+        "Murciélago SV",
+        "Aventador SVJ",
+        "Estoque",
+        "Reventón",
+        "Sián FKP 37"
+      ],
+      "McLaren": [
+        "P1",
+        "720S",
+        "Senna",
+        "Speedtail",
+        "765LT",
+        "Elva",
+        "F1",
+        "Solus GT",
+        "720S Spider"
+      ],
+      "Bugatti": [
+        "Chiron ’16",
+        "EB110",
+        "Bolide",
+        "Tourbillon"
+      ],
+      "Koenigsegg": [
+        "Jesko",
+        "Gemera"
+      ],
+      "Ferrari": [
+        "488 GTB",
+        "F40 Competizione"
+      ],
+      "Pagani": [
+        "Huayra",
+        "Huayra Roadster",
+        "Zonda R"
+      ],
+      "Porsche": [
+        "Carrera GT",
+        "911 GT3 RS",
+        "911 GT3",
+        "935",
+        "918 Spyder",
+        "Taycan Turbo S"
+      ],
+      "Aston Martin": [
+        "DB10",
+        "One-77",
+        "Vulcan",
+        "DBS",
+        "Valhalla",
+        "Vantage",
+        "Valkyrie"
+      ],
+      "Cadillac": [
+        "Elmiraj",
+        "Project GTP Hypercar"
+      ],
+      "Peugeot": [
+        "9X8 Hypercar"
+      ],
+      "Ford": [
+        "GT ’17"
+      ],
+      "Acura": [
+        "NSX ’17",
+        "NSX ’90"
+      ],
+      "Jaguar": [
+        "XJ220",
+        "F-Type Project 7"
+      ],
+      "Lotus": [
+        "Esprit S1"
+      ],
+      "Fantasy / HW Originals": [
+        "Exotique",
+        "Fast Felion",
+        "Velocita",
+        "Twin Mill",
+        "Twin Mill Gen-E",
+        "Electro Silhouette",
+        "Audacious",
+        "Gazella R",
+        "Mad Mike Drift Attack"
+      ]
+    };
+
+
+    function slug(str) {
+      return str
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+    }
+
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+
+    function renderChecklist() {
+      const container = document.getElementById("checklist");
+      const saved = loadState();
+
+
+      let total = 0;
+      let collected = 0;
+
+
+      Object.entries(dataByBrand).forEach(([brand, cars]) => {
+        const section = document.createElement("section");
+        section.className = "brand-section";
+
+
+        const h2 = document.createElement("h2");
+        h2.textContent = brand;
+        section.appendChild(h2);
+
+
+        const meta = document.createElement("div");
+        meta.className = "brand-meta";
+        meta.textContent = `${cars.length} car${cars.length !== 1 ? "s" : ""}`;
+        section.appendChild(meta);
+
+
+        const ul = document.createElement("ul");
+        ul.className = "car-list";
+
+
+        cars.forEach((carName) => {
+          total++;
+          const id = `${brand}|${carName}`;
+          const stateKey = slug(id);
+          const isChecked = !!saved[stateKey];
+
+
+          if (isChecked) collected++;
+
+
+          const li = document.createElement("li");
+          li.className = "car-item";
+
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = stateKey;
+          checkbox.checked = isChecked;
+
+
+          checkbox.addEventListener("change", () => {
+            const current = loadState();
+            current[stateKey] = checkbox.checked;
+            saveState(current);
+            updateSummary();
+          });
+
+
+          const label = document.createElement("label");
+          label.setAttribute("for", stateKey);
+          label.textContent = carName;
+
+
+          if (brand === "Fantasy / HW Originals") {
+            const tag = document.createElement("span");
+            tag.className = "fantasy-tag";
+            tag.textContent = "Fantasy casting";
+            label.appendChild(tag);
+          }
+
+
+          li.appendChild(checkbox);
+          li.appendChild(label);
+          ul.appendChild(li);
+        });
+
+
+        section.appendChild(ul);
+        container.appendChild(section);
+      });
+
+
+      // Store totals on DOM for summary use
+      document.body.dataset.totalCars = total.toString();
+      updateSummary();
+    }
+
+
+    function updateSummary() {
+      const total = parseInt(document.body.dataset.totalCars || "0", 10);
+      const saved = loadState();
+      let collected = 0;
+
+
+      Object.values(dataByBrand).forEach((cars, i) => {
+        // we recalc from DOM-state rather than trusting saved alone
+      });
+
+
+      // Better: count checked inputs
+      collected = Array.from(document.querySelectorAll('input[type="checkbox"]'))
+        .filter(cb => cb.checked).length;
+
+
+      const missing = total - collected;
+      const percent = total > 0 ? Math.round((collected / total) * 100) : 0;
+
+
+      document.getElementById("total-count").textContent = total;
+      document.getElementById("collected-count").textContent = collected;
+      document.getElementById("missing-count").textContent = missing;
+      document.getElementById("progress-percent").textContent = percent;
+    }
+
+
+    renderChecklist();
+  </script>
+</body>
+</html>
